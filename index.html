@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="it" data-lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08071A">
+<title>Memura — Il tuo secondo cervello</title>
+<meta name="description" content="Memura: parla, scrivi, fotografa. La tua memoria personale, cifrata sul tuo dispositivo. Niente moduli, niente server che leggono i tuoi pensieri.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.memuraapp.it/">
+<meta property="og:title" content="Memura — Il tuo secondo cervello">
+<meta property="og:description" content="Parla, scrivi, fotografa. Memura ricorda al posto tuo, sempre con te. Cifrato sul dispositivo.">
+<meta property="og:image" content="https://www.memuraapp.it/assets/og-image.png">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Memura — Il tuo secondo cervello">
+<meta name="twitter:description" content="La tua memoria personale, cifrata. Parla. Memura ricorda.">
+<meta name="twitter:image" content="https://www.memuraapp.it/assets/og-image.png">
+
+<!-- Favicon: stesso NeuralMark del brand -->
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<!-- Hreflang -->
+<link rel="alternate" hreflang="it" href="https://www.memuraapp.it/">
+<link rel="alternate" hreflang="en" href="https://www.memuraapp.it/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://www.memuraapp.it/">
+
+<link rel="canonical" href="https://www.memuraapp.it/">
+
+<style>
+/* ──────────────────────────────────────────────────────────────────
+   Memura Design Tokens — derivati da memura/src/theme/index.ts
+   Palette "Bioluminescenza Neurale"
+   ────────────────────────────────────────────────────────────────── */
+:root {
+  --bg-deep:     #08071A;
+  --bg-base:     #100E2A;
+  --bg-surface:  #1A1740;
+  --bg-elevated: #241F55;
+  --bg-overlay:  #2E2866;
+
+  --primary:        #8B5CF6;
+  --primary-glow:   #A78BFA;
+  --primary-deep:   #6D28D9;
+
+  --warm:           #F59E0B;
+  --warm-soft:      #FCD34D;
+
+  --teal:           #2DD4BF;
+  --teal-soft:      #5EEAD4;
+
+  --text-1: #F4F3FF;
+  --text-2: #B8B3D8;
+  --text-3: #9A95B8;
+
+  --border-soft:   rgba(139,92,246,0.18);
+  --border-medium: rgba(139,92,246,0.30);
+
+  --radius-card: 18px;
+  --radius-btn:  14px;
+  --shadow-card: 0 14px 40px -16px rgba(0,0,0,0.55);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg-deep);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--primary-glow); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Background atmosferico: due radial glow primary + teal */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(60vmax 60vmax at 15% -10%, rgba(139,92,246,0.18), transparent 60%),
+    radial-gradient(50vmax 50vmax at 110% 30%, rgba(45,212,191,0.10), transparent 60%),
+    radial-gradient(60vmax 60vmax at 50% 120%, rgba(245,158,11,0.07), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+main, header, footer { position: relative; z-index: 1; }
+
+/* ──────────────────────────────────────────────────────────────────
+   Layout
+   ────────────────────────────────────────────────────────────────── */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Header / Nav
+   ────────────────────────────────────────────────────────────────── */
+header {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border-soft);
+  /* Opaco: evita bleed dei contenuti sotto durante lo scroll.
+     Usiamo bg-base (non bg-deep) per dare un minimo di separazione dal body. */
+  background: var(--bg-base);
+  position: sticky; top: 0;
+  /* z-index alto: la regola combinata main+header+footer assegna z-index:1 a
+     tutti, ma main viene dopo nel DOM → con z-index uguale lo coprirebbe
+     durante lo scroll. Forziamo l'header sopra. */
+  z-index: 100;
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-1); font-weight: 700; font-size: 18px; letter-spacing: 0.2px;
+}
+.brand svg { width: 36px; height: 36px; }
+.nav-links {
+  display: flex; align-items: center; gap: 22px;
+}
+.nav-links a {
+  color: var(--text-2); font-size: 14px; font-weight: 500;
+}
+.nav-links a:hover { color: var(--text-1); text-decoration: none; }
+
+.lang-switch {
+  display: inline-flex; border: 1px solid var(--border-medium);
+  border-radius: 999px; padding: 3px;
+  background: rgba(26,23,64,0.5);
+}
+.lang-switch button {
+  background: transparent; border: 0; color: var(--text-2);
+  padding: 5px 12px; font-size: 13px; font-weight: 600;
+  border-radius: 999px; cursor: pointer; font-family: inherit;
+}
+.lang-switch button[aria-pressed="true"] {
+  background: var(--primary);
+  color: var(--text-1);
+}
+
+@media (max-width: 640px) {
+  .nav-links a:not(.lang-skip) { display: none; }
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Hero
+   ────────────────────────────────────────────────────────────────── */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+}
+.hero-mark {
+  display: inline-block;
+  margin-bottom: 26px;
+  filter: drop-shadow(0 16px 32px rgba(139,92,246,0.40));
+}
+.hero-mark svg { width: 140px; height: 140px; }
+
+.hero h1 {
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 1.05;
+  margin: 0 0 18px;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+.hero h1 .accent { color: var(--teal); }
+.hero p.lead {
+  font-size: clamp(17px, 1.8vw, 21px);
+  color: var(--text-2);
+  max-width: 620px;
+  margin: 0 auto 36px;
+  line-height: 1.5;
+}
+.hero p.lead em {
+  color: var(--text-1); font-style: normal; font-weight: 600;
+}
+
+.cta-row {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 22px; border-radius: var(--radius-btn);
+  font-weight: 600; font-size: 15px;
+  border: 1px solid transparent; cursor: pointer; font-family: inherit;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease;
+}
+.btn:hover { transform: translateY(-1px); text-decoration: none; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+  color: var(--text-1);
+  box-shadow: 0 10px 24px -10px rgba(139,92,246,0.7);
+}
+.btn-primary:hover { background: linear-gradient(135deg, var(--primary-glow) 0%, var(--primary) 100%); }
+.btn-ghost {
+  background: rgba(26,23,64,0.6);
+  border-color: var(--border-medium);
+  color: var(--text-1);
+}
+.btn-ghost:hover { border-color: var(--primary-glow); }
+
+.badge-soon {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 22px;
+  font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--warm-soft);
+  border: 1px solid rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.12);
+  padding: 6px 12px; border-radius: 999px;
+  font-weight: 600;
+}
+.badge-soon::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--warm);
+  box-shadow: 0 0 8px var(--warm);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Section heading
+   ────────────────────────────────────────────────────────────────── */
+section { padding: 70px 0; }
+.section-head {
+  text-align: center; max-width: 680px; margin: 0 auto 48px;
+}
+.section-head h2 {
+  font-size: clamp(28px, 3.6vw, 40px);
+  margin: 0 0 14px; letter-spacing: -0.01em; font-weight: 800;
+  line-height: 1.15;
+}
+.section-head h2 .accent { color: var(--teal); }
+.section-head p {
+  color: var(--text-2); font-size: 17px; line-height: 1.55; margin: 0;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Features grid
+   ────────────────────────────────────────────────────────────────── */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.feature {
+  background: rgba(26,23,64,0.5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-card);
+  transition: border-color .2s ease, transform .2s ease;
+}
+.feature:hover { border-color: var(--border-medium); transform: translateY(-2px); }
+.feature .ico {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  font-size: 22px;
+}
+.feature.warm .ico { background: rgba(245,158,11,0.15); color: var(--warm-soft); border: 1px solid rgba(245,158,11,0.25); }
+.feature.teal .ico { background: rgba(45,212,191,0.15); color: var(--teal-soft); border: 1px solid rgba(45,212,191,0.25); }
+.feature.violet .ico { background: rgba(139,92,246,0.18); color: var(--primary-glow); border: 1px solid var(--border-medium); }
+.feature.glow .ico { background: rgba(167,139,250,0.18); color: var(--primary-glow); border: 1px solid rgba(167,139,250,0.30); }
+.feature h3 {
+  font-size: 18px; margin: 0 0 8px; font-weight: 700; letter-spacing: -0.01em;
+}
+.feature p {
+  color: var(--text-2); margin: 0; font-size: 14.5px; line-height: 1.55;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Download / Stores
+   ────────────────────────────────────────────────────────────────── */
+.stores {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  margin-top: 18px;
+}
+.store-badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 20px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  color: #fff; min-width: 200px;
+}
+.store-badge .label-small { font-size: 10.5px; opacity: 0.7; letter-spacing: 0.04em; }
+.store-badge .label-big { font-size: 17px; font-weight: 600; line-height: 1.1; }
+.store-badge[aria-disabled="true"] {
+  opacity: 0.6; cursor: not-allowed;
+}
+.store-badge:hover { text-decoration: none; }
+
+/* ──────────────────────────────────────────────────────────────────
+   Contact
+   ────────────────────────────────────────────────────────────────── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .contact-grid { grid-template-columns: 1fr; }
+}
+.contact-list {
+  display: grid; gap: 12px;
+}
+.contact-card {
+  background: rgba(26,23,64,0.5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px; align-items: center;
+}
+.contact-card .ico {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.contact-card.hello .ico { background: rgba(139,92,246,0.18); border: 1px solid var(--border-medium); }
+.contact-card.tech  .ico { background: rgba(45,212,191,0.15); border: 1px solid rgba(45,212,191,0.25); }
+.contact-card.legal .ico { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.25); }
+.contact-card strong { display: block; font-size: 15px; }
+.contact-card a { color: var(--primary-glow); font-size: 14px; }
+.contact-card span.purpose { color: var(--text-3); font-size: 13px; display: block; margin-top: 3px; }
+
+form.contact-form {
+  background: rgba(26,23,64,0.5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  padding: 22px;
+  display: grid; gap: 12px;
+}
+form.contact-form label {
+  font-size: 13px; color: var(--text-2); display: block; margin-bottom: 5px;
+}
+form.contact-form input,
+form.contact-form textarea {
+  width: 100%;
+  background: rgba(8,7,26,0.55);
+  color: var(--text-1);
+  border: 1px solid var(--border-medium);
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-size: 14.5px;
+  font-family: inherit;
+}
+form.contact-form textarea { min-height: 110px; resize: vertical; }
+form.contact-form input:focus,
+form.contact-form textarea:focus {
+  outline: none; border-color: var(--primary-glow);
+  box-shadow: 0 0 0 3px rgba(167,139,250,0.18);
+}
+form.contact-form .hint {
+  font-size: 12px; color: var(--text-3); line-height: 1.4;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Footer
+   ────────────────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 36px 0 50px;
+  margin-top: 40px;
+  color: var(--text-3);
+  font-size: 13.5px;
+}
+.foot-grid {
+  display: flex; flex-wrap: wrap; gap: 18px;
+  align-items: center; justify-content: space-between;
+}
+.foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.foot-links a { color: var(--text-2); }
+.foot-brand { display: flex; align-items: center; gap: 10px; color: var(--text-2); }
+.foot-brand svg { width: 24px; height: 24px; }
+
+/* Animazione orbita logo hero */
+@keyframes spin { to { transform: rotate(360deg); } }
+.hero-mark .orbit { transform-origin: 30px 30px; animation: spin 38s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-mark .orbit { animation: none; }
+  .badge-soon::before { animation: none; }
+}
+
+/* Hide elements by language */
+[data-lang-only="en"] { display: none; }
+html[data-lang="en"] [data-lang-only="it"] { display: none; }
+html[data-lang="en"] [data-lang-only="en"] { display: revert; }
+
+/* Skip link a11y */
+.skip {
+  position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+}
+.skip:focus { position: static; width: auto; height: auto; padding: 8px 14px; background: var(--primary); color: #fff; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Salta al contenuto</a>
+
+<header>
+  <div class="container nav">
+    <a href="#" class="brand" aria-label="Memura home">
+      <!-- NeuralMark small inline (replica esatta di src/components/NeuralMark.tsx) -->
+      <svg viewBox="0 0 60 60" aria-hidden="true">
+        <!-- linee -->
+        <line x1="30" y1="30" x2="48"    y2="30"    stroke="#2DD4BF" stroke-width="0.85" opacity="0.58"/>
+        <line x1="30" y1="30" x2="39.00" y2="45.59" stroke="#F59E0B" stroke-width="0.78" opacity="0.55"/>
+        <line x1="30" y1="30" x2="21.00" y2="45.59" stroke="#A78BFA" stroke-width="0.72" opacity="0.38"/>
+        <line x1="30" y1="30" x2="12"    y2="30"    stroke="#2DD4BF" stroke-width="0.85" opacity="0.58"/>
+        <line x1="30" y1="30" x2="21.00" y2="14.41" stroke="#F59E0B" stroke-width="0.78" opacity="0.55"/>
+        <line x1="30" y1="30" x2="39.00" y2="14.41" stroke="#A78BFA" stroke-width="0.72" opacity="0.38"/>
+        <!-- nodi -->
+        <circle cx="48"    cy="30"    r="5.0" fill="#2DD4BF" opacity="0.95"/>
+        <circle cx="39.00" cy="45.59" r="4.2" fill="#F59E0B" opacity="0.96"/>
+        <circle cx="21.00" cy="45.59" r="3.5" fill="#A78BFA" opacity="0.78"/>
+        <circle cx="12"    cy="30"    r="5.0" fill="#2DD4BF" opacity="0.95"/>
+        <circle cx="21.00" cy="14.41" r="4.2" fill="#F59E0B" opacity="0.96"/>
+        <circle cx="39.00" cy="14.41" r="3.5" fill="#A78BFA" opacity="0.78"/>
+        <!-- centro -->
+        <circle cx="30" cy="30" r="6.5" fill="#8B5CF6" opacity="0.92"/>
+        <circle cx="30" cy="30" r="3.2" fill="#C4B5FD" opacity="0.97"/>
+      </svg>
+      <span>Memura</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#feature" data-lang-only="it">Funzionalità</a>
+      <a href="#feature" data-lang-only="en">Features</a>
+      <a href="#scarica" data-lang-only="it">Scarica</a>
+      <a href="#scarica" data-lang-only="en">Download</a>
+      <a href="#contatti" data-lang-only="it">Contatti</a>
+      <a href="#contatti" data-lang-only="en">Contact</a>
+      <div class="lang-switch" role="group" aria-label="Lingua / Language">
+        <button type="button" data-set-lang="it" aria-pressed="true">IT</button>
+        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ───── HERO ───── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-mark" aria-hidden="true">
+        <!-- NeuralMark LARGE replica (con ambient + halo + orbit animato) -->
+        <svg viewBox="0 0 60 60">
+          <defs>
+            <radialGradient id="nmGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stop-color="#8B5CF6" stop-opacity="0.55"/>
+              <stop offset="60%"  stop-color="#8B5CF6" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="nmTeal" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stop-color="#2DD4BF" stop-opacity="0.40"/>
+              <stop offset="100%" stop-color="#2DD4BF" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- ambient glow centrale -->
+          <circle cx="30" cy="30" r="29" fill="url(#nmGlow)"/>
+
+          <!-- gruppo orbitante: halo + linee + nodi -->
+          <g class="orbit">
+            <!-- halo -->
+            <circle cx="48"    cy="30"    r="11.0" fill="url(#nmTeal)" opacity="0.55"/>
+            <circle cx="39.00" cy="45.59" r="9.0"  fill="#F59E0B" opacity="0.22"/>
+            <circle cx="21.00" cy="45.59" r="8.0"  fill="#A78BFA" opacity="0.17"/>
+            <circle cx="12"    cy="30"    r="11.0" fill="url(#nmTeal)" opacity="0.55"/>
+            <circle cx="21.00" cy="14.41" r="9.0"  fill="#F59E0B" opacity="0.22"/>
+            <circle cx="39.00" cy="14.41" r="8.0"  fill="#A78BFA" opacity="0.17"/>
+
+            <!-- linee -->
+            <line x1="30" y1="30" x2="48"    y2="30"    stroke="#2DD4BF" stroke-width="0.85" opacity="0.58"/>
+            <line x1="30" y1="30" x2="39.00" y2="45.59" stroke="#F59E0B" stroke-width="0.78" opacity="0.55"/>
+            <line x1="30" y1="30" x2="21.00" y2="45.59" stroke="#A78BFA" stroke-width="0.72" opacity="0.38"/>
+            <line x1="30" y1="30" x2="12"    y2="30"    stroke="#2DD4BF" stroke-width="0.85" opacity="0.58"/>
+            <line x1="30" y1="30" x2="21.00" y2="14.41" stroke="#F59E0B" stroke-width="0.78" opacity="0.55"/>
+            <line x1="30" y1="30" x2="39.00" y2="14.41" stroke="#A78BFA" stroke-width="0.72" opacity="0.38"/>
+
+            <!-- nodi -->
+            <circle cx="48"    cy="30"    r="5.0" fill="#2DD4BF" opacity="0.95"/>
+            <circle cx="39.00" cy="45.59" r="4.2" fill="#F59E0B" opacity="0.96"/>
+            <circle cx="21.00" cy="45.59" r="3.5" fill="#A78BFA" opacity="0.78"/>
+            <circle cx="12"    cy="30"    r="5.0" fill="#2DD4BF" opacity="0.95"/>
+            <circle cx="21.00" cy="14.41" r="4.2" fill="#F59E0B" opacity="0.96"/>
+            <circle cx="39.00" cy="14.41" r="3.5" fill="#A78BFA" opacity="0.78"/>
+          </g>
+
+          <!-- centro statico -->
+          <circle cx="30" cy="30" r="14"  fill="#8B5CF6" opacity="0.18"/>
+          <circle cx="30" cy="30" r="6.5" fill="#8B5CF6" opacity="0.93"/>
+          <circle cx="30" cy="30" r="3.2" fill="#C4B5FD" opacity="0.97"/>
+        </svg>
+      </div>
+
+      <h1 data-lang-only="it">La tua memoria. <span class="accent">Privata.</span></h1>
+      <h1 data-lang-only="en">Your memory. <span class="accent">Private.</span></h1>
+
+      <p class="lead" data-lang-only="it">
+        Parla, scrivi, fotografa. <em>Memura ricorda al posto tuo</em>, sempre con te.
+      </p>
+      <p class="lead" data-lang-only="en">
+        Speak, write, snap. <em>Memura remembers for you</em>, wherever you are.
+      </p>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#scarica" data-lang-only="it">Scarica l'app</a>
+        <a class="btn btn-primary" href="#scarica" data-lang-only="en">Get the app</a>
+        <a class="btn btn-ghost"   href="#feature" data-lang-only="it">Scopri di più</a>
+        <a class="btn btn-ghost"   href="#feature" data-lang-only="en">Learn more</a>
+      </div>
+
+      <div>
+        <span class="badge-soon" data-lang-only="it">In arrivo su Android — iOS già disponibile</span>
+        <span class="badge-soon" data-lang-only="en">Coming to Android — iOS available now</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── FEATURES ───── -->
+  <section id="feature">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-lang-only="it">Più di un <span class="accent">archivio</span>.</h2>
+        <h2 data-lang-only="en">More than an <span class="accent">archive</span>.</h2>
+        <p data-lang-only="it">Promemoria, report, calendario, diario. Tutto in un unico posto, senza saltare tra cento app.</p>
+        <p data-lang-only="en">Reminders, reports, calendar, diary. All in one place, no more app hopping.</p>
+      </div>
+
+      <div class="features">
+        <article class="feature warm">
+          <div class="ico" aria-hidden="true">🎙</div>
+          <h3 data-lang-only="it">Parla. E basta.</h3>
+          <h3 data-lang-only="en">Just speak.</h3>
+          <p data-lang-only="it">Persone, date, luoghi, cifre: estratti mentre parli, senza moduli da compilare.</p>
+          <p data-lang-only="en">People, dates, places, amounts: captured as you talk, no forms to fill in.</p>
+        </article>
+
+        <article class="feature violet">
+          <div class="ico" aria-hidden="true">🧠</div>
+          <h3 data-lang-only="it">Chiedi. Lei risponde.</h3>
+          <h3 data-lang-only="en">Ask. She answers.</h3>
+          <p data-lang-only="it">I tuoi ricordi a portata di voce. Come parlare con un te più ordinato, che non dimentica nulla.</p>
+          <p data-lang-only="en">Your memories, one voice away. Like a tidier version of yourself, one that never forgets.</p>
+        </article>
+
+        <article class="feature teal">
+          <div class="ico" aria-hidden="true">🔒</div>
+          <h3 data-lang-only="it">Solo tu vedi i tuoi pensieri.</h3>
+          <h3 data-lang-only="en">Only you see your thoughts.</h3>
+          <p data-lang-only="it">Tutto cifrato sul tuo dispositivo. Nessun nostro server tocca i tuoi ricordi.</p>
+          <p data-lang-only="en">Everything encrypted on your device. Not even our servers can read them.</p>
+        </article>
+
+        <article class="feature glow">
+          <div class="ico" aria-hidden="true">✨</div>
+          <h3 data-lang-only="it">AI senza limiti. Gratis.</h3>
+          <h3 data-lang-only="en">AI without limits. Free.</h3>
+          <p data-lang-only="it">Google regala a ogni account una quota AI personale. Due minuti di setup, nessun limite all'orizzonte.</p>
+          <p data-lang-only="en">Google gifts every account a personal AI quota. Two minutes of setup, no limits in sight.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── DOWNLOAD ───── -->
+  <section id="scarica">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-lang-only="it">Scarica <span class="accent">Memura</span></h2>
+        <h2 data-lang-only="en">Download <span class="accent">Memura</span></h2>
+        <p data-lang-only="it">Disponibile su iOS. La versione Android è in revisione su Google Play.</p>
+        <p data-lang-only="en">Available on iOS. The Android version is currently under review on Google Play.</p>
+      </div>
+
+      <div class="stores">
+        <!-- iOS — placeholder URL App Store, da sostituire post-publish -->
+        <a class="store-badge" href="#" aria-label="App Store">
+          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="currentColor">
+            <path d="M16.365 1.43c0 1.14-.46 2.24-1.21 3.04-.84.9-2.21 1.59-3.34 1.5-.13-1.12.39-2.27 1.16-3.07.84-.86 2.27-1.5 3.39-1.47zM21 17.2c-.62 1.41-.92 2.04-1.72 3.28-1.11 1.74-2.67 3.91-4.6 3.93-1.72.02-2.17-1.12-4.5-1.11-2.33.01-2.81 1.13-4.53 1.11-1.94-.02-3.42-1.99-4.53-3.73C.99 16.78 0 13.61 1.69 11.11c1.2-1.78 3.1-2.83 4.88-2.83 1.82 0 2.96 1 4.47 1 1.46 0 2.36-1 4.46-1 1.58 0 3.26.86 4.45 2.35-3.91 2.14-3.28 7.71.55 9.07.05.01.1.03.5.5z"/>
+          </svg>
+          <span>
+            <span class="label-small" data-lang-only="it">Disponibile su</span>
+            <span class="label-small" data-lang-only="en">Download on the</span>
+            <span class="label-big">App Store</span>
+          </span>
+        </a>
+
+        <!-- Play Store — pre-release placeholder -->
+        <a class="store-badge" href="#" aria-label="Google Play (coming soon)" aria-disabled="true">
+          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+            <path d="M3.6 1.5c-.36.2-.6.58-.6 1.08v18.84c0 .5.24.88.6 1.08l11.04-10.5L3.6 1.5z" fill="#34D399"/>
+            <path d="M17.16 8.46l-2.52 2.4 2.52 2.4 3.66-2.16c1.08-.6 1.08-1.92 0-2.52l-3.66-2.12z" fill="#FCD34D"/>
+            <path d="M3.6 22.5l11.04-10.5-2.52-2.4L3.6 1.5z" fill="#F87171"/>
+            <path d="M14.64 12L3.6 22.5l11.04-9.24 2.52-1.26z" fill="#60A5FA"/>
+          </svg>
+          <span>
+            <span class="label-small" data-lang-only="it">In arrivo su</span>
+            <span class="label-small" data-lang-only="en">Coming soon to</span>
+            <span class="label-big">Google Play</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── CONTATTI ───── -->
+  <section id="contatti">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-lang-only="it">Parliamone.</h2>
+        <h2 data-lang-only="en">Let's talk.</h2>
+        <p data-lang-only="it">Tre indirizzi a seconda del motivo. Rispondiamo entro qualche giorno lavorativo.</p>
+        <p data-lang-only="en">Three addresses depending on the reason. We reply within a few business days.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-list">
+          <div class="contact-card hello">
+            <div class="ico" aria-hidden="true">👋</div>
+            <div>
+              <strong>hello@memuraapp.it</strong>
+              <a href="mailto:hello@memuraapp.it">hello@memuraapp.it</a>
+              <span class="purpose" data-lang-only="it">Domande generali, stampa, collaborazioni.</span>
+              <span class="purpose" data-lang-only="en">General questions, press, partnerships.</span>
+            </div>
+          </div>
+
+          <div class="contact-card tech">
+            <div class="ico" aria-hidden="true">🛠</div>
+            <div>
+              <strong>tech@memuraapp.it</strong>
+              <a href="mailto:tech@memuraapp.it">tech@memuraapp.it</a>
+              <span class="purpose" data-lang-only="it">Supporto, bug, problemi con l'app.</span>
+              <span class="purpose" data-lang-only="en">Support, bugs, app issues.</span>
+            </div>
+          </div>
+
+          <div class="contact-card legal">
+            <div class="ico" aria-hidden="true">⚖️</div>
+            <div>
+              <strong>legal@memuraapp.it</strong>
+              <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
+              <span class="purpose" data-lang-only="it">Privacy, GDPR, richieste sui dati, questioni legali.</span>
+              <span class="purpose" data-lang-only="en">Privacy, GDPR, data requests, legal matters.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form mailto: zero backend. Pre-compila l'oggetto e il corpo. -->
+        <form class="contact-form" id="contactForm" novalidate>
+          <div>
+            <label for="cf-name" data-lang-only="it">Nome</label>
+            <label for="cf-name" data-lang-only="en">Name</label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div>
+            <label for="cf-email">Email</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div>
+            <label for="cf-msg" data-lang-only="it">Messaggio</label>
+            <label for="cf-msg" data-lang-only="en">Message</label>
+            <textarea id="cf-msg" name="message" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <span data-lang-only="it">Invia messaggio</span>
+            <span data-lang-only="en">Send message</span>
+          </button>
+          <p class="hint" data-lang-only="it">Il pulsante apre il tuo client email con il messaggio precompilato verso <strong>hello@memuraapp.it</strong>.</p>
+          <p class="hint" data-lang-only="en">The button opens your email client with the message pre-filled for <strong>hello@memuraapp.it</strong>.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container foot-grid">
+    <div class="foot-brand">
+      <svg viewBox="0 0 60 60" aria-hidden="true">
+        <line x1="30" y1="30" x2="48"    y2="30"    stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+        <line x1="30" y1="30" x2="12"    y2="30"    stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+        <circle cx="48" cy="30" r="5" fill="#2DD4BF" opacity="0.9"/>
+        <circle cx="12" cy="30" r="5" fill="#2DD4BF" opacity="0.9"/>
+        <circle cx="30" cy="30" r="6" fill="#8B5CF6"/>
+      </svg>
+      <span>© <span id="year">2026</span> Memura</span>
+    </div>
+    <div class="foot-links">
+      <a href="https://legal.memuraapp.it/privacy-policy.html" data-lang-only="it">Privacy</a>
+      <a href="https://legal.memuraapp.it/privacy-policy.html" data-lang-only="en">Privacy</a>
+      <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="it">Termini di servizio</a>
+      <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="en">Terms of Service</a>
+      <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ──────────────────────────────────────────────────────────────────
+// Language toggle — client-side, no reload.
+// Persiste in localStorage. Legge ?lang=xx all'avvio.
+// ──────────────────────────────────────────────────────────────────
+(function () {
+  const html = document.documentElement;
+  const KEY = 'memura.lang';
+  const supported = ['it', 'en'];
+
+  function detect() {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (supported.includes(urlLang)) return urlLang;
+    const stored = localStorage.getItem(KEY);
+    if (supported.includes(stored)) return stored;
+    const nav = (navigator.language || 'it').slice(0, 2).toLowerCase();
+    return supported.includes(nav) ? nav : 'it';
+  }
+
+  function apply(lang) {
+    html.setAttribute('lang', lang);
+    html.setAttribute('data-lang', lang);
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.setLang === lang));
+    });
+    localStorage.setItem(KEY, lang);
+    // Aggiorna title/description per lang (anche per Open Graph rinfresca title)
+    const titles = {
+      it: 'Memura — Il tuo secondo cervello',
+      en: 'Memura — Your second brain',
+    };
+    document.title = titles[lang];
+  }
+
+  document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => apply(btn.dataset.setLang));
+  });
+
+  apply(detect());
+
+  // Footer year auto
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// Contact form → mailto. Niente backend, niente spam aperto.
+// Costruisce subject + body con encodeURIComponent.
+// ──────────────────────────────────────────────────────────────────
+document.getElementById('contactForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const name = this.name.value.trim();
+  const email = this.email.value.trim();
+  const msg = this.message.value.trim();
+  if (!name || !email || !msg) {
+    // Lascia che il browser mostri la validazione nativa con required.
+    this.reportValidity && this.reportValidity();
+    return;
+  }
+  const lang = document.documentElement.getAttribute('data-lang') || 'it';
+  const subject = lang === 'en'
+    ? `Contact from memuraapp.it — ${name}`
+    : `Contatto da memuraapp.it — ${name}`;
+  const bodyLines = lang === 'en'
+    ? [`Name: ${name}`, `Email: ${email}`, '', msg]
+    : [`Nome: ${name}`, `Email: ${email}`, '', msg];
+  const href = `mailto:hello@memuraapp.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+  window.location.href = href;
+});
+</script>
+
+</body>
+</html>

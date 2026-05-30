@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#08071A">
+<meta name="theme-color" content="#021A1E">
 <title>Memura</title>
 <meta name="description" content="Cattura una memoria in un secondo, dimentica meno. Voce o testo, l'AI estrae persone, luoghi, spese. Chiedi a Memura, lei li ritrova. Nessun server vede i tuoi pensieri.">
 
@@ -39,11 +39,13 @@
    Palette "Bioluminescenza Neurale"
    ────────────────────────────────────────────────────────────────── */
 :root {
-  --bg-deep:     #08071A;
-  --bg-base:     #100E2A;
-  --bg-surface:  #1A1740;
-  --bg-elevated: #241F55;
-  --bg-overlay:  #2E2866;
+  /* Background: dominante teal-scuro (come overlay app). Il viola resta
+     come accento (CTA, glow), non come tono di sfondo principale. */
+  --bg-deep:     #021A1E;  /* deep teal-black: body, hero */
+  --bg-base:     #052A30;  /* header sticky */
+  --bg-surface:  #0A3942;  /* cards, sezioni elevate */
+  --bg-elevated: #115160;  /* hover/focus */
+  --bg-overlay:  #1A6B7C;  /* dropdown/menu */
 
   --primary:        #8B5CF6;
   --primary-glow:   #A78BFA;
@@ -59,8 +61,11 @@
   --text-2: #B8B3D8;
   --text-3: #9A95B8;
 
-  --border-soft:   rgba(139,92,246,0.18);
-  --border-medium: rgba(139,92,246,0.30);
+  /* Esperimento invertito: bordi teal, card background viola.
+     Border = teal, card surface = viola alpha. */
+  --border-soft:   rgba(45,212,191,0.28);
+  --border-medium: rgba(45,212,191,0.45);
+  --border-violet: rgba(139,92,246,0.38);
 
   --radius-card: 18px;
   --radius-btn:  14px;
@@ -84,14 +89,19 @@ img, svg { display: block; max-width: 100%; }
 a { color: var(--primary-glow); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* Background atmosferico: due radial glow primary + teal */
+/* Background atmosferico bilanciato:
+   - teal in alto-sx + bottom-sx: tono base profondo
+   - VIOLA centrale + destra forte: presenza brand dominante visibile in scroll
+   - warm bottom: profondità sottile */
 body::before {
   content: "";
   position: fixed; inset: 0;
   background:
-    radial-gradient(60vmax 60vmax at 15% -10%, rgba(139,92,246,0.18), transparent 60%),
-    radial-gradient(50vmax 50vmax at 110% 30%, rgba(45,212,191,0.10), transparent 60%),
-    radial-gradient(60vmax 60vmax at 50% 120%, rgba(245,158,11,0.07), transparent 60%);
+    radial-gradient(65vmax 65vmax at 5% -5%, rgba(45,212,191,0.20), transparent 60%),
+    radial-gradient(60vmax 60vmax at 100% 20%, rgba(139,92,246,0.32), transparent 60%),
+    radial-gradient(55vmax 55vmax at 50% 65%, rgba(139,92,246,0.18), transparent 65%),
+    radial-gradient(55vmax 55vmax at 15% 120%, rgba(45,212,191,0.12), transparent 60%),
+    radial-gradient(45vmax 45vmax at 85% 100%, rgba(245,158,11,0.07), transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -141,7 +151,7 @@ header {
 .lang-switch {
   display: inline-flex; border: 1px solid var(--border-medium);
   border-radius: 999px; padding: 3px;
-  background: rgba(26,23,64,0.5);
+  background: rgba(36,31,85,0.55);
 }
 .lang-switch button {
   background: transparent; border: 0; color: var(--text-2);
@@ -208,11 +218,11 @@ header {
 }
 .btn-primary:hover { background: linear-gradient(135deg, var(--primary-glow) 0%, var(--primary) 100%); }
 .btn-ghost {
-  background: rgba(26,23,64,0.6);
+  background: rgba(36,31,85,0.65);
   border-color: var(--border-medium);
   color: var(--text-1);
 }
-.btn-ghost:hover { border-color: var(--primary-glow); }
+.btn-ghost:hover { border-color: var(--teal-soft); }
 
 .badge-soon {
   display: inline-flex; align-items: center; gap: 6px;
@@ -261,7 +271,7 @@ section { padding: 70px 0; }
   gap: 18px;
 }
 .feature {
-  background: rgba(26,23,64,0.5);
+  background: rgba(36,31,85,0.55);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
   padding: 26px 22px;
@@ -325,7 +335,7 @@ section { padding: 70px 0; }
   display: grid; gap: 12px;
 }
 .contact-card {
-  background: rgba(26,23,64,0.5);
+  background: rgba(36,31,85,0.55);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
   padding: 18px 20px;
@@ -341,12 +351,21 @@ section { padding: 70px 0; }
 .contact-card.hello .ico { background: rgba(139,92,246,0.18); border: 1px solid var(--border-medium); }
 .contact-card.tech  .ico { background: rgba(45,212,191,0.15); border: 1px solid rgba(45,212,191,0.25); }
 .contact-card.legal .ico { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.25); }
-.contact-card strong { display: block; font-size: 15px; }
-.contact-card a { color: var(--primary-glow); font-size: 14px; }
-.contact-card span.purpose { color: var(--text-3); font-size: 13px; display: block; margin-top: 3px; }
+/* Email cliccabile come titolo della card: unica riga, evita ridondanza
+   strong + link separati che mostravano l'indirizzo due volte. */
+.contact-card a.email {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+  text-decoration: none;
+  letter-spacing: -0.005em;
+}
+.contact-card a.email:hover { color: var(--primary-glow); text-decoration: underline; }
+.contact-card span.purpose { color: var(--text-3); font-size: 13px; display: block; margin-top: 6px; }
 
 form.contact-form {
-  background: rgba(26,23,64,0.5);
+  background: rgba(36,31,85,0.55);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
   padding: 22px;
@@ -358,7 +377,7 @@ form.contact-form label {
 form.contact-form input,
 form.contact-form textarea {
   width: 100%;
-  background: rgba(8,7,26,0.55);
+  background: rgba(2,26,30,0.6);
   color: var(--text-1);
   border: 1px solid var(--border-medium);
   border-radius: 10px;
@@ -403,10 +422,14 @@ footer {
   .badge-soon::before { animation: none; }
 }
 
-/* Hide elements by language */
-[data-lang-only="en"] { display: none; }
-html[data-lang="en"] [data-lang-only="it"] { display: none; }
-html[data-lang="en"] [data-lang-only="en"] { display: revert; }
+/* Hide elements by language.
+   !important per battere selettori più specifici come
+   `.contact-card span.purpose` (0,1,2) o `form.contact-form label` (0,1,2)
+   che altrimenti vincerebbero su `[data-lang-only="en"]` (0,1,0)
+   e renderebbero visibili entrambe le lingue contemporaneamente. */
+[data-lang-only="en"] { display: none !important; }
+html[data-lang="en"] [data-lang-only="it"] { display: none !important; }
+html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
 
 /* Skip link a11y */
 .skip {
@@ -641,8 +664,7 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert; }
           <div class="contact-card hello">
             <div class="ico" aria-hidden="true">👋</div>
             <div>
-              <strong>hello@memuraapp.it</strong>
-              <a href="mailto:hello@memuraapp.it">hello@memuraapp.it</a>
+              <a class="email" href="mailto:hello@memuraapp.it">hello@memuraapp.it</a>
               <span class="purpose" data-lang-only="it">Domande generali, stampa, collaborazioni.</span>
               <span class="purpose" data-lang-only="en">General questions, press, partnerships.</span>
             </div>
@@ -651,8 +673,7 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert; }
           <div class="contact-card tech">
             <div class="ico" aria-hidden="true">🛠</div>
             <div>
-              <strong>tech@memuraapp.it</strong>
-              <a href="mailto:tech@memuraapp.it">tech@memuraapp.it</a>
+              <a class="email" href="mailto:tech@memuraapp.it">tech@memuraapp.it</a>
               <span class="purpose" data-lang-only="it">Supporto, bug, problemi con l'app.</span>
               <span class="purpose" data-lang-only="en">Support, bugs, app issues.</span>
             </div>
@@ -661,8 +682,7 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert; }
           <div class="contact-card legal">
             <div class="ico" aria-hidden="true">⚖️</div>
             <div>
-              <strong>legal@memuraapp.it</strong>
-              <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
+              <a class="email" href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
               <span class="purpose" data-lang-only="it">Privacy, GDPR, richieste sui dati, questioni legali.</span>
               <span class="purpose" data-lang-only="en">Privacy, GDPR, data requests, legal matters.</span>
             </div>

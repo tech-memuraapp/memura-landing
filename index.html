@@ -396,6 +396,77 @@ form.contact-form .hint {
 }
 
 /* ──────────────────────────────────────────────────────────────────
+   Elimina account — riusa lo stile della grid contatti,
+   stessa griglia 1.1fr/1fr, card simile a contact-card ma più ariosa
+   perché contiene paragrafi (non solo email).
+   ────────────────────────────────────────────────────────────────── */
+.delete-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .delete-grid { grid-template-columns: 1fr; }
+}
+.delete-paths { display: grid; gap: 14px; }
+.delete-card {
+  background: rgba(36,31,85,0.55);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 16px; align-items: start;
+}
+.delete-card .ico {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+/* Path "hai l'app" = accento teal (azione immediata, gratis) */
+.delete-card.path-app .ico {
+  background: rgba(45,212,191,0.15);
+  border: 1px solid rgba(45,212,191,0.25);
+}
+/* Path "non hai più l'app" = accento viola (path web/email, fallback) */
+.delete-card.path-web .ico {
+  background: rgba(139,92,246,0.18);
+  border: 1px solid var(--border-medium);
+}
+.delete-card h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.005em;
+}
+.delete-card p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.delete-card p strong { color: var(--text-1); }
+
+/* Nota E2E: nessuna icona, padding più morbido, bordo warm soft
+   per distinguerla dalle card percorso e segnalare "info tecnica". */
+.delete-note {
+  background: rgba(2,26,30,0.55);
+  border: 1px solid rgba(245,158,11,0.22);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 4px;
+}
+.delete-note p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-3);
+}
+.delete-note p strong { color: var(--warm-soft); }
+
+/* ──────────────────────────────────────────────────────────────────
    Footer
    ────────────────────────────────────────────────────────────────── */
 footer {
@@ -649,6 +720,73 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
     </div>
   </section>
 
+  <!-- ───── ELIMINA ACCOUNT ─────
+       Sezione richiesta da Google Play Data Safety Policy (mag 2024):
+       deve esistere un URL pubblico raggiungibile da utenti che NON hanno
+       più l'app installata. Memura è E2E quindi non possiamo "leggere" i
+       contenuti, ma cancelliamo comunque i record server-side. -->
+  <section id="elimina-account">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-lang-only="it">Elimina il tuo account.</h2>
+        <h2 data-lang-only="en">Delete your account.</h2>
+        <p data-lang-only="it">Tu controlli i tuoi dati. Nessuna domanda, nessun trattenimento.</p>
+        <p data-lang-only="en">You own your data. No questions, no retention games.</p>
+      </div>
+
+      <div class="delete-grid">
+        <!-- Spiegazione 2 percorsi -->
+        <div class="delete-paths">
+          <div class="delete-card path-app">
+            <div class="ico" aria-hidden="true">📱</div>
+            <div>
+              <h3 data-lang-only="it">Hai l'app installata</h3>
+              <h3 data-lang-only="en">App still installed</h3>
+              <p data-lang-only="it">Apri Memura → <strong>Profilo</strong> → <strong>Elimina account</strong>. Un tap. Cancella memorie sul dispositivo e backup cifrati nel cloud. Istantaneo, definitivo, gratuito.</p>
+              <p data-lang-only="en">Open Memura → <strong>Profile</strong> → <strong>Delete account</strong>. One tap. Wipes on-device memories and encrypted cloud backups. Instant, permanent, free.</p>
+            </div>
+          </div>
+
+          <div class="delete-card path-web">
+            <div class="ico" aria-hidden="true">📧</div>
+            <div>
+              <h3 data-lang-only="it">Non hai più l'app</h3>
+              <h3 data-lang-only="en">No longer have the app</h3>
+              <p data-lang-only="it">Compila il form qui a fianco con la mail del tuo account. La richiesta arriva a <strong>legal@memuraapp.it</strong>. Cancelliamo <strong>entro 30 giorni</strong> record utente e bucket cifrati. Conferma via email.</p>
+              <p data-lang-only="en">Fill the form on the side with the email of your account. Request lands at <strong>legal@memuraapp.it</strong>. We wipe user record and encrypted buckets <strong>within 30 days</strong>. Email confirmation.</p>
+            </div>
+          </div>
+
+          <!-- Nota su come funziona la cancellazione lato server con E2E -->
+          <div class="delete-note">
+            <p data-lang-only="it"><strong>Come funziona con la cifratura end-to-end.</strong> Memura non legge le tue memorie: sono cifrate sul dispositivo prima dell'upload. Cancellare il tuo account distrugge i bucket cifrati e la chiave: il dato non è solo "non più accessibile", è matematicamente irrecuperabile — anche da noi.</p>
+            <p data-lang-only="en"><strong>How deletion works with end-to-end encryption.</strong> Memura never reads your memories: they are encrypted on-device before upload. Deleting your account destroys encrypted buckets and the key: the data is not merely "no longer accessible" — it is mathematically unrecoverable, even by us.</p>
+          </div>
+        </div>
+
+        <!-- Form mailto: nessun backend, apre client email pre-compilato. -->
+        <form class="contact-form" id="deleteForm" novalidate>
+          <div>
+            <label for="df-email" data-lang-only="it">Email dell'account Memura</label>
+            <label for="df-email" data-lang-only="en">Memura account email</label>
+            <input id="df-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div>
+            <label for="df-reason" data-lang-only="it">Motivo (facoltativo)</label>
+            <label for="df-reason" data-lang-only="en">Reason (optional)</label>
+            <textarea id="df-reason" name="reason" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <span data-lang-only="it">Richiedi cancellazione</span>
+            <span data-lang-only="en">Request deletion</span>
+          </button>
+          <p class="hint" data-lang-only="it">Il pulsante apre il tuo client email con la richiesta pre-compilata verso <strong>legal@memuraapp.it</strong>. Conferma di solito entro 30 giorni.</p>
+          <p class="hint" data-lang-only="en">The button opens your email client with the request pre-filled for <strong>legal@memuraapp.it</strong>. Confirmation usually within 30 days.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <!-- ───── CONTATTI ───── -->
   <section id="contatti">
     <div class="container">
@@ -734,6 +872,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
       <a href="https://legal.memuraapp.it/privacy-policy.html" data-lang-only="en">Privacy</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="it">Termini di servizio</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="en">Terms of Service</a>
+      <a href="#elimina-account" data-lang-only="it">Elimina account</a>
+      <a href="#elimina-account" data-lang-only="en">Delete account</a>
       <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
     </div>
   </div>
@@ -805,6 +945,42 @@ document.getElementById('contactForm').addEventListener('submit', function (e) {
     ? [`Name: ${name}`, `Email: ${email}`, '', msg]
     : [`Nome: ${name}`, `Email: ${email}`, '', msg];
   const href = `mailto:hello@memuraapp.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+  window.location.href = href;
+});
+
+// ──────────────────────────────────────────────────────────────────
+// Delete account form → mailto verso legal@.
+// Stessa logica del contactForm, ma indirizzo + subject dedicati
+// così la richiesta è già classificata in casella.
+// ──────────────────────────────────────────────────────────────────
+document.getElementById('deleteForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const email = this.email.value.trim();
+  const reason = this.reason.value.trim();
+  if (!email) {
+    this.reportValidity && this.reportValidity();
+    return;
+  }
+  const lang = document.documentElement.getAttribute('data-lang') || 'it';
+  const subject = lang === 'en'
+    ? 'Account deletion request'
+    : 'Richiesta cancellazione account';
+  const bodyLines = lang === 'en'
+    ? [
+        `Account email: ${email}`,
+        '',
+        reason ? `Reason: ${reason}` : '(no reason provided)',
+        '',
+        'I confirm I want my Memura account and all associated server-side data permanently deleted.'
+      ]
+    : [
+        `Email account: ${email}`,
+        '',
+        reason ? `Motivo: ${reason}` : '(nessun motivo fornito)',
+        '',
+        'Confermo di voler eliminare definitivamente il mio account Memura e tutti i dati server associati.'
+      ];
+  const href = `mailto:legal@memuraapp.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
   window.location.href = href;
 });
 </script>

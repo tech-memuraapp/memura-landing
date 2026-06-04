@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#021A1E">
+<meta name="theme-color" content="#08071A">
 <title>Memura</title>
 <meta name="description" content="Cattura una memoria in un secondo, dimentica meno. Voce o testo, l'AI estrae persone, luoghi, spese. Chiedi a Memura, lei li ritrova. Nessun server vede i tuoi pensieri.">
 
@@ -39,13 +39,11 @@
    Palette "Bioluminescenza Neurale"
    ────────────────────────────────────────────────────────────────── */
 :root {
-  /* Background: dominante teal-scuro (come overlay app). Il viola resta
-     come accento (CTA, glow), non come tono di sfondo principale. */
-  --bg-deep:     #021A1E;  /* deep teal-black: body, hero */
-  --bg-base:     #052A30;  /* header sticky */
-  --bg-surface:  #0A3942;  /* cards, sezioni elevate */
-  --bg-elevated: #115160;  /* hover/focus */
-  --bg-overlay:  #1A6B7C;  /* dropdown/menu */
+  --bg-deep:     #08071A;
+  --bg-base:     #100E2A;
+  --bg-surface:  #1A1740;
+  --bg-elevated: #241F55;
+  --bg-overlay:  #2E2866;
 
   --primary:        #8B5CF6;
   --primary-glow:   #A78BFA;
@@ -61,11 +59,8 @@
   --text-2: #B8B3D8;
   --text-3: #9A95B8;
 
-  /* Esperimento invertito: bordi teal, card background viola.
-     Border = teal, card surface = viola alpha. */
-  --border-soft:   rgba(45,212,191,0.28);
-  --border-medium: rgba(45,212,191,0.45);
-  --border-violet: rgba(139,92,246,0.38);
+  --border-soft:   rgba(139,92,246,0.18);
+  --border-medium: rgba(139,92,246,0.30);
 
   --radius-card: 18px;
   --radius-btn:  14px;
@@ -89,19 +84,14 @@ img, svg { display: block; max-width: 100%; }
 a { color: var(--primary-glow); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* Background atmosferico bilanciato:
-   - teal in alto-sx + bottom-sx: tono base profondo
-   - VIOLA centrale + destra forte: presenza brand dominante visibile in scroll
-   - warm bottom: profondità sottile */
+/* Background atmosferico: due radial glow primary + teal */
 body::before {
   content: "";
   position: fixed; inset: 0;
   background:
-    radial-gradient(65vmax 65vmax at 5% -5%, rgba(45,212,191,0.20), transparent 60%),
-    radial-gradient(60vmax 60vmax at 100% 20%, rgba(139,92,246,0.32), transparent 60%),
-    radial-gradient(55vmax 55vmax at 50% 65%, rgba(139,92,246,0.18), transparent 65%),
-    radial-gradient(55vmax 55vmax at 15% 120%, rgba(45,212,191,0.12), transparent 60%),
-    radial-gradient(45vmax 45vmax at 85% 100%, rgba(245,158,11,0.07), transparent 60%);
+    radial-gradient(60vmax 60vmax at 15% -10%, rgba(139,92,246,0.18), transparent 60%),
+    radial-gradient(50vmax 50vmax at 110% 30%, rgba(45,212,191,0.10), transparent 60%),
+    radial-gradient(60vmax 60vmax at 50% 120%, rgba(245,158,11,0.07), transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -151,7 +141,7 @@ header {
 .lang-switch {
   display: inline-flex; border: 1px solid var(--border-medium);
   border-radius: 999px; padding: 3px;
-  background: rgba(36,31,85,0.55);
+  background: rgba(26,23,64,0.5);
 }
 .lang-switch button {
   background: transparent; border: 0; color: var(--text-2);
@@ -218,11 +208,11 @@ header {
 }
 .btn-primary:hover { background: linear-gradient(135deg, var(--primary-glow) 0%, var(--primary) 100%); }
 .btn-ghost {
-  background: rgba(36,31,85,0.65);
+  background: rgba(26,23,64,0.6);
   border-color: var(--border-medium);
   color: var(--text-1);
 }
-.btn-ghost:hover { border-color: var(--teal-soft); }
+.btn-ghost:hover { border-color: var(--primary-glow); }
 
 .badge-soon {
   display: inline-flex; align-items: center; gap: 6px;
@@ -271,7 +261,7 @@ section { padding: 70px 0; }
   gap: 18px;
 }
 .feature {
-  background: rgba(36,31,85,0.55);
+  background: rgba(26,23,64,0.5);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
   padding: 26px 22px;
@@ -335,7 +325,7 @@ section { padding: 70px 0; }
   display: grid; gap: 12px;
 }
 .contact-card {
-  background: rgba(36,31,85,0.55);
+  background: rgba(26,23,64,0.5);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
   padding: 18px 20px;
@@ -351,21 +341,12 @@ section { padding: 70px 0; }
 .contact-card.hello .ico { background: rgba(139,92,246,0.18); border: 1px solid var(--border-medium); }
 .contact-card.tech  .ico { background: rgba(45,212,191,0.15); border: 1px solid rgba(45,212,191,0.25); }
 .contact-card.legal .ico { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.25); }
-/* Email cliccabile come titolo della card: unica riga, evita ridondanza
-   strong + link separati che mostravano l'indirizzo due volte. */
-.contact-card a.email {
-  display: block;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-1);
-  text-decoration: none;
-  letter-spacing: -0.005em;
-}
-.contact-card a.email:hover { color: var(--primary-glow); text-decoration: underline; }
-.contact-card span.purpose { color: var(--text-3); font-size: 13px; display: block; margin-top: 6px; }
+.contact-card strong { display: block; font-size: 15px; }
+.contact-card a { color: var(--primary-glow); font-size: 14px; }
+.contact-card span.purpose { color: var(--text-3); font-size: 13px; display: block; margin-top: 3px; }
 
 form.contact-form {
-  background: rgba(36,31,85,0.55);
+  background: rgba(26,23,64,0.5);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-card);
   padding: 22px;
@@ -377,7 +358,7 @@ form.contact-form label {
 form.contact-form input,
 form.contact-form textarea {
   width: 100%;
-  background: rgba(2,26,30,0.6);
+  background: rgba(8,7,26,0.55);
   color: var(--text-1);
   border: 1px solid var(--border-medium);
   border-radius: 10px;
@@ -394,77 +375,6 @@ form.contact-form textarea:focus {
 form.contact-form .hint {
   font-size: 12px; color: var(--text-3); line-height: 1.4;
 }
-
-/* ──────────────────────────────────────────────────────────────────
-   Elimina account — riusa lo stile della grid contatti,
-   stessa griglia 1.1fr/1fr, card simile a contact-card ma più ariosa
-   perché contiene paragrafi (non solo email).
-   ────────────────────────────────────────────────────────────────── */
-.delete-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 32px;
-  align-items: start;
-}
-@media (max-width: 760px) {
-  .delete-grid { grid-template-columns: 1fr; }
-}
-.delete-paths { display: grid; gap: 14px; }
-.delete-card {
-  background: rgba(36,31,85,0.55);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-card);
-  padding: 20px 22px;
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 16px; align-items: start;
-}
-.delete-card .ico {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-}
-/* Path "hai l'app" = accento teal (azione immediata, gratis) */
-.delete-card.path-app .ico {
-  background: rgba(45,212,191,0.15);
-  border: 1px solid rgba(45,212,191,0.25);
-}
-/* Path "non hai più l'app" = accento viola (path web/email, fallback) */
-.delete-card.path-web .ico {
-  background: rgba(139,92,246,0.18);
-  border: 1px solid var(--border-medium);
-}
-.delete-card h3 {
-  margin: 0 0 6px;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-1);
-  letter-spacing: -0.005em;
-}
-.delete-card p {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--text-2);
-}
-.delete-card p strong { color: var(--text-1); }
-
-/* Nota E2E: nessuna icona, padding più morbido, bordo warm soft
-   per distinguerla dalle card percorso e segnalare "info tecnica". */
-.delete-note {
-  background: rgba(2,26,30,0.55);
-  border: 1px solid rgba(245,158,11,0.22);
-  border-radius: 12px;
-  padding: 14px 18px;
-  margin-top: 4px;
-}
-.delete-note p {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--text-3);
-}
-.delete-note p strong { color: var(--warm-soft); }
 
 /* ──────────────────────────────────────────────────────────────────
    Footer
@@ -493,14 +403,10 @@ footer {
   .badge-soon::before { animation: none; }
 }
 
-/* Hide elements by language.
-   !important per battere selettori più specifici come
-   `.contact-card span.purpose` (0,1,2) o `form.contact-form label` (0,1,2)
-   che altrimenti vincerebbero su `[data-lang-only="en"]` (0,1,0)
-   e renderebbero visibili entrambe le lingue contemporaneamente. */
-[data-lang-only="en"] { display: none !important; }
-html[data-lang="en"] [data-lang-only="it"] { display: none !important; }
-html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
+/* Hide elements by language */
+[data-lang-only="en"] { display: none; }
+html[data-lang="en"] [data-lang-only="it"] { display: none; }
+html[data-lang="en"] [data-lang-only="en"] { display: revert; }
 
 /* Skip link a11y */
 .skip {
@@ -627,8 +533,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
       </div>
 
       <div>
-        <span class="badge-soon" data-lang-only="it">In arrivo su Android — iOS già disponibile</span>
-        <span class="badge-soon" data-lang-only="en">Coming to Android — iOS available now</span>
+        <span class="badge-soon" data-lang-only="it">Disponibile su iOS e Android</span>
+        <span class="badge-soon" data-lang-only="en">Available on iOS and Android</span>
       </div>
     </div>
   </section>
@@ -685,13 +591,13 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
       <div class="section-head">
         <h2 data-lang-only="it">Scarica <span class="accent">Memura</span></h2>
         <h2 data-lang-only="en">Download <span class="accent">Memura</span></h2>
-        <p data-lang-only="it">Disponibile su iOS. La versione Android è in revisione su Google Play.</p>
-        <p data-lang-only="en">Available on iOS. The Android version is currently under review on Google Play.</p>
+        <p data-lang-only="it">Disponibile su iOS e Android. Scarica gratis dal tuo store.</p>
+        <p data-lang-only="en">Available on iOS and Android. Download free from your store.</p>
       </div>
 
       <div class="stores">
-        <!-- iOS — placeholder URL App Store, da sostituire post-publish -->
-        <a class="store-badge" href="#" aria-label="App Store">
+        <!-- iOS App Store (Memura id 6773503673) -->
+        <a class="store-badge" href="https://apps.apple.com/us/app/memura/id6773503673" target="_blank" rel="noopener" aria-label="Scarica Memura sull'App Store">
           <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="currentColor">
             <path d="M16.365 1.43c0 1.14-.46 2.24-1.21 3.04-.84.9-2.21 1.59-3.34 1.5-.13-1.12.39-2.27 1.16-3.07.84-.86 2.27-1.5 3.39-1.47zM21 17.2c-.62 1.41-.92 2.04-1.72 3.28-1.11 1.74-2.67 3.91-4.6 3.93-1.72.02-2.17-1.12-4.5-1.11-2.33.01-2.81 1.13-4.53 1.11-1.94-.02-3.42-1.99-4.53-3.73C.99 16.78 0 13.61 1.69 11.11c1.2-1.78 3.1-2.83 4.88-2.83 1.82 0 2.96 1 4.47 1 1.46 0 2.36-1 4.46-1 1.58 0 3.26.86 4.45 2.35-3.91 2.14-3.28 7.71.55 9.07.05.01.1.03.5.5z"/>
           </svg>
@@ -702,8 +608,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
           </span>
         </a>
 
-        <!-- Play Store — pre-release placeholder -->
-        <a class="store-badge" href="#" aria-label="Google Play (coming soon)" aria-disabled="true">
+        <!-- Google Play (Memura, com.memuraapp.memura) -->
+        <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.memuraapp.memura" target="_blank" rel="noopener" aria-label="Scarica Memura su Google Play">
           <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
             <path d="M3.6 1.5c-.36.2-.6.58-.6 1.08v18.84c0 .5.24.88.6 1.08l11.04-10.5L3.6 1.5z" fill="#34D399"/>
             <path d="M17.16 8.46l-2.52 2.4 2.52 2.4 3.66-2.16c1.08-.6 1.08-1.92 0-2.52l-3.66-2.12z" fill="#FCD34D"/>
@@ -711,78 +617,11 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
             <path d="M14.64 12L3.6 22.5l11.04-9.24 2.52-1.26z" fill="#60A5FA"/>
           </svg>
           <span>
-            <span class="label-small" data-lang-only="it">In arrivo su</span>
-            <span class="label-small" data-lang-only="en">Coming soon to</span>
+            <span class="label-small" data-lang-only="it">Disponibile su</span>
+            <span class="label-small" data-lang-only="en">Get it on</span>
             <span class="label-big">Google Play</span>
           </span>
         </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───── ELIMINA ACCOUNT ─────
-       Sezione richiesta da Google Play Data Safety Policy (mag 2024):
-       deve esistere un URL pubblico raggiungibile da utenti che NON hanno
-       più l'app installata. Memura è E2E quindi non possiamo "leggere" i
-       contenuti, ma cancelliamo comunque i record server-side. -->
-  <section id="elimina-account">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-lang-only="it">Elimina il tuo account.</h2>
-        <h2 data-lang-only="en">Delete your account.</h2>
-        <p data-lang-only="it">Tu controlli i tuoi dati. Nessuna domanda, nessun trattenimento.</p>
-        <p data-lang-only="en">You own your data. No questions, no retention games.</p>
-      </div>
-
-      <div class="delete-grid">
-        <!-- Spiegazione 2 percorsi -->
-        <div class="delete-paths">
-          <div class="delete-card path-app">
-            <div class="ico" aria-hidden="true">📱</div>
-            <div>
-              <h3 data-lang-only="it">Hai l'app installata</h3>
-              <h3 data-lang-only="en">App still installed</h3>
-              <p data-lang-only="it">Apri Memura → <strong>Profilo</strong> → <strong>Elimina account</strong>. Un tap. Cancella memorie sul dispositivo e backup cifrati nel cloud. Istantaneo, definitivo, gratuito.</p>
-              <p data-lang-only="en">Open Memura → <strong>Profile</strong> → <strong>Delete account</strong>. One tap. Wipes on-device memories and encrypted cloud backups. Instant, permanent, free.</p>
-            </div>
-          </div>
-
-          <div class="delete-card path-web">
-            <div class="ico" aria-hidden="true">📧</div>
-            <div>
-              <h3 data-lang-only="it">Non hai più l'app</h3>
-              <h3 data-lang-only="en">No longer have the app</h3>
-              <p data-lang-only="it">Compila il form qui a fianco con la mail del tuo account. La richiesta arriva a <strong>legal@memuraapp.it</strong>. Cancelliamo <strong>entro 30 giorni</strong> record utente e bucket cifrati. Conferma via email.</p>
-              <p data-lang-only="en">Fill the form on the side with the email of your account. Request lands at <strong>legal@memuraapp.it</strong>. We wipe user record and encrypted buckets <strong>within 30 days</strong>. Email confirmation.</p>
-            </div>
-          </div>
-
-          <!-- Nota su come funziona la cancellazione lato server con E2E -->
-          <div class="delete-note">
-            <p data-lang-only="it"><strong>Come funziona con la cifratura end-to-end.</strong> Memura non legge le tue memorie: sono cifrate sul dispositivo prima dell'upload. Cancellare il tuo account distrugge i bucket cifrati e la chiave: il dato non è solo "non più accessibile", è matematicamente irrecuperabile — anche da noi.</p>
-            <p data-lang-only="en"><strong>How deletion works with end-to-end encryption.</strong> Memura never reads your memories: they are encrypted on-device before upload. Deleting your account destroys encrypted buckets and the key: the data is not merely "no longer accessible" — it is mathematically unrecoverable, even by us.</p>
-          </div>
-        </div>
-
-        <!-- Form mailto: nessun backend, apre client email pre-compilato. -->
-        <form class="contact-form" id="deleteForm" novalidate>
-          <div>
-            <label for="df-email" data-lang-only="it">Email dell'account Memura</label>
-            <label for="df-email" data-lang-only="en">Memura account email</label>
-            <input id="df-email" name="email" type="email" autocomplete="email" required>
-          </div>
-          <div>
-            <label for="df-reason" data-lang-only="it">Motivo (facoltativo)</label>
-            <label for="df-reason" data-lang-only="en">Reason (optional)</label>
-            <textarea id="df-reason" name="reason" rows="3"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">
-            <span data-lang-only="it">Richiedi cancellazione</span>
-            <span data-lang-only="en">Request deletion</span>
-          </button>
-          <p class="hint" data-lang-only="it">Il pulsante apre il tuo client email con la richiesta pre-compilata verso <strong>legal@memuraapp.it</strong>. Conferma di solito entro 30 giorni.</p>
-          <p class="hint" data-lang-only="en">The button opens your email client with the request pre-filled for <strong>legal@memuraapp.it</strong>. Confirmation usually within 30 days.</p>
-        </form>
       </div>
     </div>
   </section>
@@ -802,7 +641,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
           <div class="contact-card hello">
             <div class="ico" aria-hidden="true">👋</div>
             <div>
-              <a class="email" href="mailto:hello@memuraapp.it">hello@memuraapp.it</a>
+              <strong>hello@memuraapp.it</strong>
+              <a href="mailto:hello@memuraapp.it">hello@memuraapp.it</a>
               <span class="purpose" data-lang-only="it">Domande generali, stampa, collaborazioni.</span>
               <span class="purpose" data-lang-only="en">General questions, press, partnerships.</span>
             </div>
@@ -811,7 +651,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
           <div class="contact-card tech">
             <div class="ico" aria-hidden="true">🛠</div>
             <div>
-              <a class="email" href="mailto:tech@memuraapp.it">tech@memuraapp.it</a>
+              <strong>tech@memuraapp.it</strong>
+              <a href="mailto:tech@memuraapp.it">tech@memuraapp.it</a>
               <span class="purpose" data-lang-only="it">Supporto, bug, problemi con l'app.</span>
               <span class="purpose" data-lang-only="en">Support, bugs, app issues.</span>
             </div>
@@ -820,7 +661,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
           <div class="contact-card legal">
             <div class="ico" aria-hidden="true">⚖️</div>
             <div>
-              <a class="email" href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
+              <strong>legal@memuraapp.it</strong>
+              <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
               <span class="purpose" data-lang-only="it">Privacy, GDPR, richieste sui dati, questioni legali.</span>
               <span class="purpose" data-lang-only="en">Privacy, GDPR, data requests, legal matters.</span>
             </div>
@@ -872,8 +714,6 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert !important; }
       <a href="https://legal.memuraapp.it/privacy-policy.html" data-lang-only="en">Privacy</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="it">Termini di servizio</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="en">Terms of Service</a>
-      <a href="#elimina-account" data-lang-only="it">Elimina account</a>
-      <a href="#elimina-account" data-lang-only="en">Delete account</a>
       <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
     </div>
   </div>
@@ -945,42 +785,6 @@ document.getElementById('contactForm').addEventListener('submit', function (e) {
     ? [`Name: ${name}`, `Email: ${email}`, '', msg]
     : [`Nome: ${name}`, `Email: ${email}`, '', msg];
   const href = `mailto:hello@memuraapp.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-  window.location.href = href;
-});
-
-// ──────────────────────────────────────────────────────────────────
-// Delete account form → mailto verso legal@.
-// Stessa logica del contactForm, ma indirizzo + subject dedicati
-// così la richiesta è già classificata in casella.
-// ──────────────────────────────────────────────────────────────────
-document.getElementById('deleteForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  const email = this.email.value.trim();
-  const reason = this.reason.value.trim();
-  if (!email) {
-    this.reportValidity && this.reportValidity();
-    return;
-  }
-  const lang = document.documentElement.getAttribute('data-lang') || 'it';
-  const subject = lang === 'en'
-    ? 'Account deletion request'
-    : 'Richiesta cancellazione account';
-  const bodyLines = lang === 'en'
-    ? [
-        `Account email: ${email}`,
-        '',
-        reason ? `Reason: ${reason}` : '(no reason provided)',
-        '',
-        'I confirm I want my Memura account and all associated server-side data permanently deleted.'
-      ]
-    : [
-        `Email account: ${email}`,
-        '',
-        reason ? `Motivo: ${reason}` : '(nessun motivo fornito)',
-        '',
-        'Confermo di voler eliminare definitivamente il mio account Memura e tutti i dati server associati.'
-      ];
-  const href = `mailto:legal@memuraapp.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
   window.location.href = href;
 });
 </script>

@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="it" data-lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08071A">
+<title>Accessibilità — Memura</title>
+<meta name="description" content="Le funzioni di accessibilità supportate da Memura su iPhone, Android e Apple Watch: screen reader, controllo vocale, testo più grande, interfaccia scura, contrasto sufficiente, movimento ridotto.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.memuraapp.it/accessibilita.html">
+<meta property="og:title" content="Accessibilità — Memura">
+<meta property="og:description" content="Le funzioni di accessibilità supportate da Memura su iPhone, Android e Apple Watch.">
+<meta property="og:image" content="https://www.memuraapp.it/assets/og-image.png">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_US">
+
+<!-- Favicon: stesso NeuralMark del brand -->
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<!-- Hreflang -->
+<link rel="alternate" hreflang="it" href="https://www.memuraapp.it/accessibilita.html">
+<link rel="alternate" hreflang="en" href="https://www.memuraapp.it/accessibilita.html?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://www.memuraapp.it/accessibilita.html">
+
+<link rel="canonical" href="https://www.memuraapp.it/accessibilita.html">
+
+<style>
+/* ──────────────────────────────────────────────────────────────────
+   Memura Design Tokens — derivati da memura/src/theme/index.ts
+   Palette "Bioluminescenza Neurale" (stessi token di index.html)
+   ────────────────────────────────────────────────────────────────── */
+:root {
+  --bg-deep:     #08071A;
+  --bg-base:     #100E2A;
+  --bg-surface:  #1A1740;
+  --bg-elevated: #241F55;
+  --bg-overlay:  #2E2866;
+
+  --primary:        #8B5CF6;
+  --primary-glow:   #A78BFA;
+  --primary-deep:   #6D28D9;
+
+  --warm:           #F59E0B;
+  --warm-soft:      #FCD34D;
+
+  --teal:           #2DD4BF;
+  --teal-soft:      #5EEAD4;
+
+  --text-1: #F4F3FF;
+  --text-2: #B8B3D8;
+  --text-3: #9A95B8;
+
+  --border-soft:   rgba(139,92,246,0.18);
+  --border-medium: rgba(139,92,246,0.30);
+
+  --radius-card: 18px;
+  --radius-btn:  14px;
+  --shadow-card: 0 14px 40px -16px rgba(0,0,0,0.55);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg-deep);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--primary-glow); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Background atmosferico: due radial glow primary + teal */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(60vmax 60vmax at 15% -10%, rgba(139,92,246,0.18), transparent 60%),
+    radial-gradient(50vmax 50vmax at 110% 30%, rgba(45,212,191,0.10), transparent 60%),
+    radial-gradient(60vmax 60vmax at 50% 120%, rgba(245,158,11,0.07), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+main, header, footer { position: relative; z-index: 1; }
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header / Nav — identico a index.html */
+header {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-base);
+  position: sticky; top: 0;
+  z-index: 100;
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-1); font-weight: 700; font-size: 18px; letter-spacing: 0.2px;
+}
+.brand svg { width: 36px; height: 36px; }
+.nav-links {
+  display: flex; align-items: center; gap: 22px;
+}
+.nav-links a {
+  color: var(--text-2); font-size: 14px; font-weight: 500;
+}
+.nav-links a:hover { color: var(--text-1); text-decoration: none; }
+
+.lang-switch {
+  display: inline-flex; border: 1px solid var(--border-medium);
+  border-radius: 999px; padding: 3px;
+  background: rgba(26,23,64,0.5);
+}
+.lang-switch button {
+  background: transparent; border: 0; color: var(--text-2);
+  padding: 5px 12px; font-size: 13px; font-weight: 600;
+  border-radius: 999px; cursor: pointer; font-family: inherit;
+}
+.lang-switch button[aria-pressed="true"] {
+  background: var(--primary);
+  color: var(--text-1);
+}
+
+@media (max-width: 640px) {
+  .nav-links a:not(.lang-skip) { display: none; }
+}
+
+/* Hero compatto per pagina interna */
+.hero {
+  padding: 64px 0 30px;
+  text-align: center;
+}
+.hero h1 {
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.05;
+  margin: 0 0 18px;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+.hero h1 .accent { color: var(--teal); }
+.hero p.lead {
+  font-size: clamp(17px, 1.8vw, 21px);
+  color: var(--text-2);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+.hero p.lead em {
+  color: var(--text-1); font-style: normal; font-weight: 600;
+}
+
+/* Section heading */
+section { padding: 56px 0; }
+.section-head {
+  text-align: center; max-width: 680px; margin: 0 auto 48px;
+}
+.section-head h2 {
+  font-size: clamp(28px, 3.6vw, 40px);
+  margin: 0 0 14px; letter-spacing: -0.01em; font-weight: 800;
+  line-height: 1.15;
+}
+.section-head h2 .accent { color: var(--teal); }
+.section-head p {
+  color: var(--text-2); font-size: 17px; line-height: 1.55; margin: 0;
+}
+
+/* Features grid — riusa il pattern card di index.html */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.feature {
+  background: rgba(26,23,64,0.5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-card);
+  transition: border-color .2s ease, transform .2s ease;
+}
+.feature:hover { border-color: var(--border-medium); transform: translateY(-2px); }
+.feature .ico {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  font-size: 22px;
+}
+.feature.warm .ico { background: rgba(245,158,11,0.15); color: var(--warm-soft); border: 1px solid rgba(245,158,11,0.25); }
+.feature.teal .ico { background: rgba(45,212,191,0.15); color: var(--teal-soft); border: 1px solid rgba(45,212,191,0.25); }
+.feature.violet .ico { background: rgba(139,92,246,0.18); color: var(--primary-glow); border: 1px solid var(--border-medium); }
+.feature.glow .ico { background: rgba(167,139,250,0.18); color: var(--primary-glow); border: 1px solid rgba(167,139,250,0.30); }
+.feature h3 {
+  font-size: 18px; margin: 0 0 8px; font-weight: 700; letter-spacing: -0.01em;
+}
+.feature p {
+  color: var(--text-2); margin: 0; font-size: 14.5px; line-height: 1.55;
+}
+
+/* Badge piattaforma nelle card (iPhone / Apple Watch) */
+.plat {
+  display: inline-flex; gap: 6px; margin-top: 12px; flex-wrap: wrap;
+}
+.plat span {
+  font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--teal-soft);
+  border: 1px solid rgba(45,212,191,0.25);
+  background: rgba(45,212,191,0.10);
+  padding: 3px 9px; border-radius: 999px;
+  font-weight: 600;
+}
+
+/* Card contatto feedback */
+.contact-card {
+  background: rgba(26,23,64,0.5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px; align-items: center;
+  max-width: 520px; margin: 0 auto;
+}
+.contact-card .ico {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  background: rgba(45,212,191,0.15); border: 1px solid rgba(45,212,191,0.25);
+}
+.contact-card strong { display: block; font-size: 15px; }
+.contact-card a { color: var(--primary-glow); font-size: 14px; }
+.contact-card span.purpose { color: var(--text-3); font-size: 13px; display: block; margin-top: 3px; }
+
+/* Nota aggiornamento */
+.updated {
+  text-align: center; color: var(--text-3); font-size: 13px; margin-top: 28px;
+}
+
+/* Footer — identico a index.html */
+footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 36px 0 50px;
+  margin-top: 40px;
+  color: var(--text-3);
+  font-size: 13.5px;
+}
+.foot-grid {
+  display: flex; flex-wrap: wrap; gap: 18px;
+  align-items: center; justify-content: space-between;
+}
+.foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.foot-links a { color: var(--text-2); }
+.foot-brand { display: flex; align-items: center; gap: 10px; color: var(--text-2); }
+.foot-brand svg { width: 24px; height: 24px; }
+
+/* Hide elements by language */
+[data-lang-only="en"] { display: none; }
+html[data-lang="en"] [data-lang-only="it"] { display: none; }
+html[data-lang="en"] [data-lang-only="en"] { display: revert; }
+
+/* Skip link a11y */
+.skip {
+  position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+}
+.skip:focus { position: static; width: auto; height: auto; padding: 8px 14px; background: var(--primary); color: #fff; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-lang-only="it">Salta al contenuto</a>
+<a class="skip" href="#main" data-lang-only="en">Skip to content</a>
+
+<header>
+  <div class="container nav">
+    <a href="index.html" class="brand" aria-label="Memura home">
+      <!-- NeuralMark small inline (replica esatta di src/components/NeuralMark.tsx) -->
+      <svg viewBox="0 0 60 60" aria-hidden="true">
+        <line x1="30" y1="30" x2="48"    y2="30"    stroke="#2DD4BF" stroke-width="0.85" opacity="0.58"/>
+        <line x1="30" y1="30" x2="39.00" y2="45.59" stroke="#F59E0B" stroke-width="0.78" opacity="0.55"/>
+        <line x1="30" y1="30" x2="21.00" y2="45.59" stroke="#A78BFA" stroke-width="0.72" opacity="0.38"/>
+        <line x1="30" y1="30" x2="12"    y2="30"    stroke="#2DD4BF" stroke-width="0.85" opacity="0.58"/>
+        <line x1="30" y1="30" x2="21.00" y2="14.41" stroke="#F59E0B" stroke-width="0.78" opacity="0.55"/>
+        <line x1="30" y1="30" x2="39.00" y2="14.41" stroke="#A78BFA" stroke-width="0.72" opacity="0.38"/>
+        <circle cx="48"    cy="30"    r="5.0" fill="#2DD4BF" opacity="0.95"/>
+        <circle cx="39.00" cy="45.59" r="4.2" fill="#F59E0B" opacity="0.96"/>
+        <circle cx="21.00" cy="45.59" r="3.5" fill="#A78BFA" opacity="0.78"/>
+        <circle cx="12"    cy="30"    r="5.0" fill="#2DD4BF" opacity="0.95"/>
+        <circle cx="21.00" cy="14.41" r="4.2" fill="#F59E0B" opacity="0.96"/>
+        <circle cx="39.00" cy="14.41" r="3.5" fill="#A78BFA" opacity="0.78"/>
+        <circle cx="30" cy="30" r="6.5" fill="#8B5CF6" opacity="0.92"/>
+        <circle cx="30" cy="30" r="3.2" fill="#C4B5FD" opacity="0.97"/>
+      </svg>
+      <span>Memura</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#feature" data-lang-only="it">Funzionalità</a>
+      <a href="index.html#feature" data-lang-only="en">Features</a>
+      <a href="index.html#scarica" data-lang-only="it">Scarica</a>
+      <a href="index.html#scarica" data-lang-only="en">Download</a>
+      <a href="index.html#contatti" data-lang-only="it">Contatti</a>
+      <a href="index.html#contatti" data-lang-only="en">Contact</a>
+      <div class="lang-switch" role="group" aria-label="Lingua / Language">
+        <button type="button" data-set-lang="it" aria-pressed="true">IT</button>
+        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ───── HERO ───── -->
+  <section class="hero">
+    <div class="container">
+      <h1 data-lang-only="it">Memura è per <span class="accent">tutti</span>.</h1>
+      <h1 data-lang-only="en">Memura is for <span class="accent">everyone</span>.</h1>
+
+      <p class="lead" data-lang-only="it">
+        La memoria non dovrebbe avere barriere. Memura è progettata per funzionare con le
+        tecnologie assistive di iOS, Android e watchOS, <em>per essere usata da chiunque, comunque la usi</em>.
+      </p>
+      <p class="lead" data-lang-only="en">
+        Memory should have no barriers. Memura is designed to work with iOS, Android and watchOS
+        assistive technologies, <em>so anyone can use it, however they use it</em>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ───── FUNZIONI SUPPORTATE ───── -->
+  <section id="funzioni">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-lang-only="it">Funzioni <span class="accent">supportate</span></h2>
+        <h2 data-lang-only="en">Supported <span class="accent">features</span></h2>
+        <p data-lang-only="it">Tutte le attività principali — creare una memoria con voce o testo, cercarla, chiedere all'AI, gestire promemoria e spese — sono pensate per funzionare con queste tecnologie.</p>
+        <p data-lang-only="en">All core tasks — capturing a memory by voice or text, finding it, asking the AI, managing reminders and expenses — are designed to work with these technologies.</p>
+      </div>
+
+      <div class="features">
+        <article class="feature violet">
+          <div class="ico" aria-hidden="true">🗣</div>
+          <h3>VoiceOver / TalkBack</h3>
+          <p data-lang-only="it">Ogni schermata è esplorabile con lo screen reader: pulsanti e contenuti hanno etichette nella tua lingua, le azioni di modifica ed eliminazione sono esposte come azioni dello screen reader.</p>
+          <p data-lang-only="en">Every screen works with the screen reader: buttons and content are labeled in your language, and edit/delete actions are exposed as screen reader actions.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+
+        <article class="feature teal">
+          <div class="ico" aria-hidden="true">🎛</div>
+          <h3 data-lang-only="it">Controllo vocale / Voice&nbsp;Access</h3>
+          <h3 data-lang-only="en">Voice Control / Voice&nbsp;Access</h3>
+          <p data-lang-only="it">Puoi navigare e usare l'app solo con la voce: le etichette dei controlli corrispondono al testo visibile, la dettatura funziona in ogni campo di testo.</p>
+          <p data-lang-only="en">Navigate and use the app with your voice alone: control labels match the visible text, and dictation works in every text field.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span></div>
+        </article>
+
+        <article class="feature warm">
+          <div class="ico" aria-hidden="true">🔠</div>
+          <h3 data-lang-only="it">Testo più grande</h3>
+          <h3 data-lang-only="en">Larger Text</h3>
+          <p data-lang-only="it">Il testo segue la dimensione scelta nelle impostazioni di sistema, fino alle taglie accessibility, senza tagli né sovrapposizioni nelle attività principali.</p>
+          <p data-lang-only="en">Text follows your system text size, up to accessibility sizes, with no clipping or overlap in core tasks.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+
+        <article class="feature violet">
+          <div class="ico" aria-hidden="true">🌙</div>
+          <h3 data-lang-only="it">Interfaccia scura</h3>
+          <h3 data-lang-only="en">Dark Interface</h3>
+          <p data-lang-only="it">Memura è scura per design, su ogni schermata: la palette "Bioluminescenza Neurale" nasce per ridurre l'affaticamento degli occhi.</p>
+          <p data-lang-only="en">Memura is dark by design, on every screen: the "Neural Bioluminescence" palette was created to reduce eye strain.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+
+        <article class="feature teal">
+          <div class="ico" aria-hidden="true">🧩</div>
+          <h3 data-lang-only="it">Differenzia non solo con il colore</h3>
+          <h3 data-lang-only="en">Differentiate Without Color Alone</h3>
+          <p data-lang-only="it">Il colore non è mai l'unico segnale: icone, forme, testi e conteggi accompagnano sempre le informazioni cromatiche — dalle emozioni delle memorie alla mappa delle connessioni.</p>
+          <p data-lang-only="en">Color is never the only signal: icons, shapes, text and counts always accompany color-coded information — from memory emotions to the connections map.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+
+        <article class="feature warm">
+          <div class="ico" aria-hidden="true">◐</div>
+          <h3 data-lang-only="it">Contrasto sufficiente</h3>
+          <h3 data-lang-only="en">Sufficient Contrast</h3>
+          <p data-lang-only="it">Testi e icone rispettano i rapporti di contrasto WCAG AA (4,5:1 per il testo, 3:1 per gli elementi grafici) su tutta la palette.</p>
+          <p data-lang-only="en">Text and icons meet WCAG AA contrast ratios (4.5:1 for text, 3:1 for graphics) across the entire palette.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+
+        <article class="feature glow">
+          <div class="ico" aria-hidden="true">🍃</div>
+          <h3 data-lang-only="it">Movimento ridotto</h3>
+          <h3 data-lang-only="en">Reduced Motion</h3>
+          <p data-lang-only="it">Con "Riduci movimento" attivo le animazioni — rotazioni, pulsazioni, impulsi neurali — si fermano o degradano a transizioni di opacità, senza perdere informazioni.</p>
+          <p data-lang-only="en">With Reduce Motion on, animations — rotations, pulses, neural impulses — stop or degrade to opacity transitions, with no loss of information.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+
+        <article class="feature glow">
+          <div class="ico" aria-hidden="true">📝</div>
+          <h3 data-lang-only="it">Trascrizioni</h3>
+          <h3 data-lang-only="en">Transcripts</h3>
+          <p data-lang-only="it">Ogni memoria vocale viene trascritta automaticamente: il contenuto è sempre disponibile anche come testo, mai solo come audio.</p>
+          <p data-lang-only="en">Every voice memory is automatically transcribed: content is always available as text, never as audio only.</p>
+          <div class="plat"><span>iPhone</span><span>Android</span><span>Apple Watch</span></div>
+        </article>
+      </div>
+
+      <p class="updated" data-lang-only="it">Ultimo aggiornamento: giugno 2026 · Verifichiamo il supporto a ogni release.</p>
+      <p class="updated" data-lang-only="en">Last updated: June 2026 · We verify support with every release.</p>
+    </div>
+  </section>
+
+  <!-- ───── FEEDBACK ───── -->
+  <section id="feedback">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-lang-only="it">Qualcosa non <span class="accent">funziona</span>?</h2>
+        <h2 data-lang-only="en">Something not <span class="accent">working</span>?</h2>
+        <p data-lang-only="it">L'accessibilità è un lavoro continuo. Se incontri una barriera usando Memura con una tecnologia assistiva, scrivici: è il modo più rapido per farcela correggere.</p>
+        <p data-lang-only="en">Accessibility is ongoing work. If you hit a barrier using Memura with an assistive technology, write to us: it's the fastest way to get it fixed.</p>
+      </div>
+
+      <div class="contact-card">
+        <div class="ico" aria-hidden="true">🛠</div>
+        <div>
+          <strong>tech@memuraapp.it</strong>
+          <a href="mailto:tech@memuraapp.it?subject=Accessibilit%C3%A0%20Memura">tech@memuraapp.it</a>
+          <span class="purpose" data-lang-only="it">Segnalazioni di accessibilità: dicci dispositivo, tecnologia assistiva e dove ti sei bloccato.</span>
+          <span class="purpose" data-lang-only="en">Accessibility reports: tell us your device, assistive technology and where you got stuck.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container foot-grid">
+    <div class="foot-brand">
+      <svg viewBox="0 0 60 60" aria-hidden="true">
+        <line x1="30" y1="30" x2="48"    y2="30"    stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+        <line x1="30" y1="30" x2="12"    y2="30"    stroke="#2DD4BF" stroke-width="1" opacity="0.6"/>
+        <circle cx="48" cy="30" r="5" fill="#2DD4BF" opacity="0.9"/>
+        <circle cx="12" cy="30" r="5" fill="#2DD4BF" opacity="0.9"/>
+        <circle cx="30" cy="30" r="6" fill="#8B5CF6"/>
+      </svg>
+      <span>© <span id="year">2026</span> Memura</span>
+    </div>
+    <div class="foot-links">
+      <a href="https://legal.memuraapp.it/privacy-policy.html">Privacy</a>
+      <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="it">Termini di servizio</a>
+      <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="en">Terms of Service</a>
+      <a href="mailto:legal@memuraapp.it">legal@memuraapp.it</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ──────────────────────────────────────────────────────────────────
+// Language toggle — identico a index.html (stessa chiave localStorage,
+// la preferenza scelta qui vale anche sulla home e viceversa).
+// ──────────────────────────────────────────────────────────────────
+(function () {
+  const html = document.documentElement;
+  const KEY = 'memura.lang';
+  const supported = ['it', 'en'];
+
+  function detect() {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (supported.includes(urlLang)) return urlLang;
+    const stored = localStorage.getItem(KEY);
+    if (supported.includes(stored)) return stored;
+    const nav = (navigator.language || 'it').slice(0, 2).toLowerCase();
+    return supported.includes(nav) ? nav : 'it';
+  }
+
+  function apply(lang) {
+    html.setAttribute('lang', lang);
+    html.setAttribute('data-lang', lang);
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.setLang === lang));
+    });
+    localStorage.setItem(KEY, lang);
+    const titles = {
+      it: 'Accessibilità — Memura',
+      en: 'Accessibility — Memura',
+    };
+    document.title = titles[lang];
+  }
+
+  document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => apply(btn.dataset.setLang));
+  });
+
+  apply(detect());
+
+  // Footer year auto
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>

@@ -407,6 +407,7 @@ footer {
 [data-lang-only="en"] { display: none; }
 html[data-lang="en"] [data-lang-only="it"] { display: none; }
 html[data-lang="en"] [data-lang-only="en"] { display: revert; }
+html[data-lang="en"] .badge-soon[data-lang-only="en"] { display: inline-flex; } /* revert dà inline per <span>, ma badge-soon richiede inline-flex */
 
 /* Skip link a11y */
 .skip {

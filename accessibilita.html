@@ -138,7 +138,9 @@ header {
 }
 
 @media (max-width: 640px) {
-  .nav-links a:not(.lang-skip) { display: none; }
+  /* "header" alza la specificità: altrimenti la regola che mostra i testi inglesi, scritta più sotto,
+     riaccende i link del menu su telefono e spinge il selettore lingua fuori schermo. */
+  header .nav-links a:not(.lang-skip) { display: none; }
 }
 
 /* Hero compatto per pagina interna */
@@ -466,6 +468,8 @@ html[data-lang="en"] [data-lang-only="en"] { display: revert; }
       <span>© <span id="year">2026</span> Memura</span>
     </div>
     <div class="foot-links">
+      <a href="elimina-account.html" data-lang-only="it">Elimina account</a>
+      <a href="elimina-account.html" data-lang-only="en">Delete account</a>
       <a href="https://legal.memuraapp.it/privacy-policy.html">Privacy</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="it">Termini di servizio</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="en">Terms of Service</a>

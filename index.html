@@ -154,7 +154,9 @@ header {
 }
 
 @media (max-width: 640px) {
-  .nav-links a:not(.lang-skip) { display: none; }
+  /* "header" alza la specificità: altrimenti la regola che mostra i testi inglesi, scritta più sotto,
+     riaccende i link del menu su telefono e spinge il selettore lingua fuori schermo. */
+  header .nav-links a:not(.lang-skip) { display: none; }
 }
 
 /* ──────────────────────────────────────────────────────────────────
@@ -571,8 +573,8 @@ html[data-lang="en"] .badge-soon[data-lang-only="en"] { display: inline-flex; } 
           <div class="ico" aria-hidden="true">🔒</div>
           <h3 data-lang-only="it">Solo tu vedi i tuoi pensieri.</h3>
           <h3 data-lang-only="en">Only you see your thoughts.</h3>
-          <p data-lang-only="it">Tutto cifrato sul tuo dispositivo. Nessun nostro server tocca i tuoi ricordi.</p>
-          <p data-lang-only="en">Everything encrypted on your device. Not even our servers can read them.</p>
+          <p data-lang-only="it">Tutto cifrato sul tuo dispositivo. Non conserviamo i tuoi ricordi sui nostri server: per elaborarli il testo passa da noi a Google Gemini, che non lo usa per addestrare i modelli.</p>
+          <p data-lang-only="en">Everything encrypted on your device. We don't store your memories on our servers: to process them, the text passes through us to Google Gemini, which doesn't use it to train models.</p>
         </article>
 
         <article class="feature glow">
@@ -713,6 +715,8 @@ html[data-lang="en"] .badge-soon[data-lang-only="en"] { display: inline-flex; } 
     <div class="foot-links">
       <a href="accessibilita.html" data-lang-only="it">Accessibilità</a>
       <a href="accessibilita.html" data-lang-only="en">Accessibility</a>
+      <a href="elimina-account.html" data-lang-only="it">Elimina account</a>
+      <a href="elimina-account.html" data-lang-only="en">Delete account</a>
       <a href="https://legal.memuraapp.it/privacy-policy.html" data-lang-only="it">Privacy</a>
       <a href="https://legal.memuraapp.it/privacy-policy.html" data-lang-only="en">Privacy</a>
       <a href="https://legal.memuraapp.it/terms-of-service.html" data-lang-only="it">Termini di servizio</a>

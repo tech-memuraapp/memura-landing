@@ -9,4 +9,20 @@
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://www.memuraapp.it/accessibilita.html</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.memuraapp.it/accessibilita.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.memuraapp.it/accessibilita.html?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.memuraapp.it/accessibilita.html"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.memuraapp.it/elimina-account.html</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.memuraapp.it/elimina-account.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.memuraapp.it/elimina-account.html?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.memuraapp.it/elimina-account.html"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
 </urlset>
